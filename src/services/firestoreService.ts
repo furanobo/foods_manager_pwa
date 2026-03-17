@@ -7,10 +7,14 @@ import {
   deleteDoc,
   setDoc,
   getDoc,
+  getDocs,
+  query,
+  where,
+  writeBatch,
   Timestamp,
 } from 'firebase/firestore'
 import { db } from '../firebase'
-import type { FoodItem, Settings } from '../types/FoodItem'
+import type { FoodItem, Settings, ShoppingItem } from '../types/FoodItem'
 
 function toFoodItem(id: string, data: Record<string, unknown>): FoodItem {
   return {
@@ -82,4 +86,65 @@ export async function loadSettings(uid: string): Promise<Settings | null> {
   if (!snap.exists()) return null
   const data = snap.data() as Settings
   return data
+}
+
+// Shopping list
+function toShoppingItem(id: string, data: Record<string, unknown>): ShoppingItem {
+  return {
+    id,
+    name: (data.name as string) ?? '',
+    quantity: (data.quantity as string) ?? '',
+    checked: (data.checked as boolean) ?? false,
+    createdAt: data.createdAt instanceof Timestamp ? data.createdAt.toDate() : new Date(),
+  }
+}
+
+export function subscribeToShopping(
+  uid: string,
+  callback: (items: ShoppingItem[]) => void
+): () => void {
+  const ref = collection(db, 'users', uid, 'shopping')
+  return onSnapshot(ref, (snapshot) => {
+    const items = snapshot.docs
+      .map((d) => toShoppingItem(d.id, d.data() as Record<string, unknown>))
+      .sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime())
+    callback(items)
+  })
+}
+
+export async function addShoppingItem(
+  uid: string,
+  item: Omit<ShoppingItem, 'id'>
+): Promise<string> {
+  const ref = collection(db, 'users', uid, 'shopping')
+  const docRef = await addDoc(ref, {
+    name: item.name,
+    quantity: item.quantity,
+    checked: item.checked,
+    createdAt: Timestamp.fromDate(item.createdAt),
+  })
+  return docRef.id
+}
+
+export async function updateShoppingItem(
+  uid: string,
+  itemId: string,
+  updates: Partial<Omit<ShoppingItem, 'id'>>
+): Promise<void> {
+  const ref = doc(db, 'users', uid, 'shopping', itemId)
+  await updateDoc(ref, updates as Record<string, unknown>)
+}
+
+export async function deleteShoppingItem(uid: string, itemId: string): Promise<void> {
+  const ref = doc(db, 'users', uid, 'shopping', itemId)
+  await deleteDoc(ref)
+}
+
+export async function clearCheckedShoppingItems(uid: string): Promise<void> {
+  const ref = collection(db, 'users', uid, 'shopping')
+  const q = query(ref, where('checked', '==', true))
+  const snap = await getDocs(q)
+  const batch = writeBatch(db)
+  snap.docs.forEach((d) => batch.delete(d.ref))
+  await batch.commit()
 }

@@ -12,10 +12,39 @@ export default function BottomNav() {
         }
       >
         <svg viewBox="0 0 24 24" className="w-6 h-6 fill-current">
-          <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+          <path d="M18.06 22.99h1.66c.84 0 1.53-.64 1.63-1.46L23 5.05h-5V1h-1.97v4.05h-4.97l.3 2.34c1.71.47 3.31 1.32 4.27 2.26 1.44 1.42 2.43 2.89 2.43 5.29v8.05zM1 21.99V21h15.03v.99c0 .55-.45 1-1.01 1H2.01c-.56 0-1.01-.45-1.01-1zm15.03-7c0-8.19-9.52-8.19-15.03 0h15.03zM1.02 17h15v2h-15z" />
         </svg>
-        <span>ホーム</span>
+        <span>食材</span>
       </NavLink>
+
+      <NavLink
+        to="/recipe"
+        className={({ isActive }) =>
+          `flex-1 flex flex-col items-center justify-center py-2 gap-1 text-xs transition-colors ${
+            isActive ? 'text-green-600' : 'text-gray-400'
+          }`
+        }
+      >
+        <svg viewBox="0 0 24 24" className="w-6 h-6 fill-current">
+          <path d="M18.5 3H6c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM6 19V5h5v14H6zm12 0h-5V5h5v14zM9 9H7V7h2v2zm0 4H7v-2h2v2zm0 4H7v-2h2v2zm8-8h-2V7h2v2zm0 4h-2v-2h2v2zm0 4h-2v-2h2v2z" />
+        </svg>
+        <span>レシピ</span>
+      </NavLink>
+
+      <NavLink
+        to="/shopping"
+        className={({ isActive }) =>
+          `flex-1 flex flex-col items-center justify-center py-2 gap-1 text-xs transition-colors ${
+            isActive ? 'text-green-600' : 'text-gray-400'
+          }`
+        }
+      >
+        <svg viewBox="0 0 24 24" className="w-6 h-6 fill-current">
+          <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z" />
+        </svg>
+        <span>買い物</span>
+      </NavLink>
+
       <NavLink
         to="/settings"
         className={({ isActive }) =>

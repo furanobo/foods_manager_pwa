@@ -4,6 +4,8 @@ import { onAuthStateChanged } from 'firebase/auth'
 import { auth } from './firebase'
 import AuthPage from './pages/AuthPage'
 import HomePage from './pages/HomePage'
+import RecipePage from './pages/RecipePage'
+import ShoppingPage from './pages/ShoppingPage'
 import SettingsPage from './pages/SettingsPage'
 import { useAuthStore } from './store/authStore'
 
@@ -46,6 +48,8 @@ function AppRoutes() {
       <Route path="/" element={<Navigate to={user ? '/home' : '/auth'} replace />} />
       <Route path="/auth" element={user ? <Navigate to="/home" replace /> : <AuthPage />} />
       <Route path="/home" element={user ? <HomePage /> : <Navigate to="/auth" replace />} />
+      <Route path="/recipe" element={user ? <RecipePage /> : <Navigate to="/auth" replace />} />
+      <Route path="/shopping" element={user ? <ShoppingPage /> : <Navigate to="/auth" replace />} />
       <Route path="/settings" element={user ? <SettingsPage /> : <Navigate to="/auth" replace />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

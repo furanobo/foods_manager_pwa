@@ -14,3 +14,11 @@ export interface Settings {
   noticeFlag: boolean
   noticeTime: string // "HH:mm"
 }
+
+export interface ShoppingItem {
+  id: string
+  name: string
+  quantity: string
+  checked: boolean
+  createdAt: Date
+}
