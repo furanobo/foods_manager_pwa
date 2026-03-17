@@ -10,13 +10,13 @@ export default function AuthPage() {
     setLoading(true)
     setError(null)
     try {
-      const provider = new GoogleAuthProvider()
-      await signInWithPopup(auth, provider)
-      // Navigation is handled by SplashPage/useAuth listener
-    } catch (err) {
+      await signInWithPopup(auth, new GoogleAuthProvider())
+      // 成功後の遷移は AuthProvider の onAuthStateChanged が担当
+    } catch (err: any) {
       console.error(err)
-      setError('ログインに失敗しました。もう一度お試しください。')
-    } finally {
+      // エラーコードを表示して原因を特定しやすくする
+      const code = err?.code ?? 'unknown'
+      setError(`ログインに失敗しました (${code})`)
       setLoading(false)
     }
   }
@@ -31,36 +31,29 @@ export default function AuthPage() {
           </svg>
         </div>
 
-        {/* Title */}
         <div className="text-center">
           <h1 className="text-2xl font-bold text-gray-800">食材マネージャー</h1>
           <p className="text-gray-500 text-sm mt-2">食材の賞味期限と在庫を<br />スマートに管理</p>
         </div>
 
-        {/* Features */}
         <ul className="text-sm text-gray-600 space-y-2 w-full">
           <li className="flex items-center gap-2">
-            <span className="text-green-500 font-bold">✓</span>
-            バーコードスキャンで簡単登録
+            <span className="text-green-500 font-bold">✓</span>バーコードスキャンで簡単登録
           </li>
           <li className="flex items-center gap-2">
-            <span className="text-green-500 font-bold">✓</span>
-            賞味期限の色分け警告
+            <span className="text-green-500 font-bold">✓</span>賞味期限の色分け警告
           </li>
           <li className="flex items-center gap-2">
-            <span className="text-green-500 font-bold">✓</span>
-            期限切れ通知機能
+            <span className="text-green-500 font-bold">✓</span>期限切れ通知機能
           </li>
         </ul>
 
-        {/* Error */}
         {error && (
-          <p className="text-red-500 text-sm text-center bg-red-50 rounded-lg px-4 py-2 w-full">
+          <p className="text-red-500 text-sm text-center bg-red-50 rounded-lg px-4 py-2 w-full break-all">
             {error}
           </p>
         )}
 
-        {/* Sign-in Button */}
         <button
           onClick={handleGoogleSignIn}
           disabled={loading}

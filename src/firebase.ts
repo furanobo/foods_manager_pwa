@@ -4,14 +4,13 @@ import { getFirestore } from 'firebase/firestore'
 import { getStorage } from 'firebase/storage'
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyBNbdVBMmVmE7_TzmRKbfQY0CbX7Z9lssI',
-  appId: '1:979449650922:web:fa52008c4e2627101bc193',
-  messagingSenderId: '979449650922',
-  projectId: 'foods-manager-62109',
-  authDomain: 'foods-manager-62109.firebaseapp.com',
-  databaseURL: 'https://foods-manager-62109-default-rtdb.firebaseio.com',
-  storageBucket: 'foods-manager-62109.appspot.com',
-  measurementId: 'G-VXFJK9TEW9',
+  apiKey: 'AIzaSyDlTf4rXcc9UcAwKRyeu1-IlSKAXRkxXqY',
+  appId: '1:362803203972:web:eaac6fd2a6c466d29c97d1',
+  messagingSenderId: '362803203972',
+  projectId: 'icebox-94f8d',
+  authDomain: 'icebox-94f8d.firebaseapp.com',
+  storageBucket: 'icebox-94f8d.firebasestorage.app',
+  measurementId: 'G-WBPTFNM57Q',
 }
 
 export const app = initializeApp(firebaseConfig)
