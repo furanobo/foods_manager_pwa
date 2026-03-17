@@ -11,24 +11,38 @@ test.describe('ホーム画面', () => {
     await expect(page.getByText('食材マネージャー')).toBeVisible()
   })
 
-  test('下部ナビゲーションが表示される', async ({ page }) => {
-    await expect(page.getByRole('link', { name: /ホーム/ })).toBeVisible()
+  test('4タブナビゲーションが表示される', async ({ page }) => {
+    await expect(page.getByRole('link', { name: /食材/ })).toBeVisible()
+    await expect(page.getByRole('link', { name: /レシピ/ })).toBeVisible()
+    await expect(page.getByRole('link', { name: /買い物/ })).toBeVisible()
     await expect(page.getByRole('link', { name: /設定/ })).toBeVisible()
   })
 
-  test('FAB（追加ボタン）が表示される', async ({ page }) => {
-    const fab = page.locator('button').filter({ has: page.locator('svg') }).last()
+  test('FABが表示される', async ({ page }) => {
+    const fab = page.locator('button[title="バーコードスキャン"]')
     await expect(fab).toBeVisible()
   })
 
-  test('設定画面に遷移できる', async ({ page }) => {
+  test('レシピタブに遷移できる', async ({ page }) => {
+    await page.getByRole('link', { name: /レシピ/ }).click()
+    await expect(page).toHaveURL(/\/foods\/recipe/)
+    await expect(page.getByText('レシピを探す')).toBeVisible()
+  })
+
+  test('買い物タブに遷移できる', async ({ page }) => {
+    await page.getByRole('link', { name: /買い物/ }).click()
+    await expect(page).toHaveURL(/\/foods\/shopping/)
+    await expect(page.getByText('買い物リスト')).toBeVisible()
+  })
+
+  test('設定タブに遷移できる', async ({ page }) => {
     await page.getByRole('link', { name: /設定/ }).click()
     await expect(page).toHaveURL(/\/foods\/settings/)
   })
 
-  test('ホームタブでホームに戻れる', async ({ page }) => {
+  test('食材タブでホームに戻れる', async ({ page }) => {
     await page.goto('/foods/settings')
-    await page.getByRole('link', { name: /ホーム/ }).click()
+    await page.getByRole('link', { name: /食材/ }).click()
     await expect(page).toHaveURL(/\/foods\/home/)
   })
 })

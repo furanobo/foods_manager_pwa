@@ -1,8 +1,11 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useFoodItems } from '../hooks/useFoodItems'
 import { useAuthStore } from '../store/authStore'
+import { useSettingStore } from '../store/settingStore'
+import { useFoodItemStore } from '../store/foodItemStore'
 import { addItem } from '../services/firestoreService'
 import { searchByJanCode } from '../services/yahooApiService'
+import { checkAndNotifyOnOpen } from '../services/notificationService'
 import FoodItemList from '../components/FoodItemList'
 import BarcodeScanner from '../components/BarcodeScanner'
 import AddItemDialog from '../components/AddItemDialog'
@@ -18,7 +21,15 @@ type UIState =
 export default function HomePage() {
   useFoodItems()
   const user = useAuthStore((s) => s.user)
+  const items = useFoodItemStore((s) => s.items)
+  const settings = useSettingStore((s) => s.settings)
   const [ui, setUi] = useState<UIState>({ mode: 'idle' })
+
+  useEffect(() => {
+    if (settings.noticeFlag && items.length > 0) {
+      checkAndNotifyOnOpen(items, settings.noticeTime)
+    }
+  }, [items, settings.noticeFlag, settings.noticeTime])
   const [scanError, setScanError] = useState<string | null>(null)
 
   const handleFabClick = () => {

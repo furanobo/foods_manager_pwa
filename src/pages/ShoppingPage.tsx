@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { useAuthStore } from '../store/authStore'
 import { useShoppingStore } from '../store/shoppingStore'
 import { useShopping } from '../hooks/useShopping'
@@ -17,6 +17,29 @@ export default function ShoppingPage() {
   const [newName, setNewName] = useState('')
   const [newQty, setNewQty] = useState('')
   const [adding, setAdding] = useState(false)
+  const [locating, setLocating] = useState(false)
+
+  const handleFindSupermarket = useCallback(() => {
+    if (!('geolocation' in navigator)) {
+      window.open('https://www.google.com/maps/search/スーパー', '_blank')
+      return
+    }
+    setLocating(true)
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude: lat, longitude: lng } = position.coords
+        window.open(
+          `https://www.google.com/maps/search/スーパー/@${lat},${lng},15z`,
+          '_blank',
+        )
+        setLocating(false)
+      },
+      () => {
+        window.open('https://www.google.com/maps/search/スーパー', '_blank')
+        setLocating(false)
+      },
+    )
+  }, [])
 
   const unchecked = items.filter((i) => !i.checked)
   const checked = items.filter((i) => i.checked)
@@ -177,6 +200,29 @@ export default function ShoppingPage() {
             <p className="text-gray-400 text-sm mt-1">上のフォームから追加してください</p>
           </div>
         )}
+
+        {/* Find nearby supermarket */}
+        <section className="bg-white rounded-2xl shadow-sm p-4">
+          <button
+            onClick={handleFindSupermarket}
+            disabled={locating}
+            className="w-full flex items-center justify-center gap-2 bg-blue-500 text-white font-medium rounded-xl py-3 text-sm hover:bg-blue-600 active:bg-blue-700 transition-colors disabled:opacity-50"
+          >
+            {locating ? (
+              <>
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                位置情報を取得中...
+              </>
+            ) : (
+              <>
+                <svg viewBox="0 0 24 24" className="w-5 h-5 fill-white">
+                  <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+                </svg>
+                近くのスーパーを探す
+              </>
+            )}
+          </button>
+        </section>
       </main>
 
       <BottomNav />

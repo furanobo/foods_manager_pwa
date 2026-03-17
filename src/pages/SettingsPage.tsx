@@ -88,14 +88,31 @@ export default function SettingsPage() {
             </div>
 
             {settings.noticeFlag && (
-              <div className="px-4 py-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">通知時刻</label>
-                <input
-                  type="time"
-                  value={settings.noticeTime}
-                  onChange={(e) => setSettings({ ...settings, noticeTime: e.target.value })}
-                  className="border border-gray-200 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-400"
-                />
+              <div className="px-4 py-4 space-y-3">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">通知時刻</label>
+                  <input
+                    type="time"
+                    value={settings.noticeTime}
+                    onChange={(e) => setSettings({ ...settings, noticeTime: e.target.value })}
+                    className="border border-gray-200 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-400"
+                  />
+                </div>
+                <button
+                  disabled={!settings.noticeFlag}
+                  onClick={async () => {
+                    const granted = await requestPermission()
+                    if (granted) {
+                      new Notification('テスト通知', {
+                        body: '通知が正常に設定されています',
+                        icon: '/foods/icons/icon-192.png',
+                      })
+                    }
+                  }}
+                  className="w-full bg-green-100 text-green-700 font-medium rounded-xl py-2 text-sm hover:bg-green-200 active:bg-green-300 transition-colors disabled:opacity-50"
+                >
+                  テスト通知を送る
+                </button>
               </div>
             )}
           </div>
